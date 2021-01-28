@@ -5,7 +5,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.1379551055622273 0.9854239417306007 0.09953915768902352 1.3904752993701748
-  position 2.5554836721926097 0.9943153856771965 1.0010621232930816
+  position 4.222092407227264 1.370389495691127 1.3271499576595431
   follow "Pioneer 3-DX"
 }
 TexturedBackground {
@@ -16,6 +16,12 @@ RectangleArena {
   floorSize 5 5
   floorTileSize 2 2
   wallHeight 0.5
+}
+Armchair {
+  translation -1.9 0 -1.08
+}
+OilBarrel {
+  translation 0.57 0.44 -0.85
 }
 Pedestrian {
   translation 1.79 1.27 1.76

@@ -5,7 +5,7 @@ import math
 from controller import Robot
 from threading import Lock
 from roslibpy import Message, Ros, Topic
-from utils import build_ros_odometry_2d, build_ros_array_msg, SimpleTimer
+from utils import build_ros_array_msg, SimpleTimer, LidarRos
 
 """
 Download Twisted‑20.3.0‑cp39‑cp39‑win_amd64.whl from https://www.lfd.uci.edu/~gohlke/pythonlibs/#twisted
@@ -20,8 +20,7 @@ class MyController(Robot):
         super(MyController, self).__init__()
         self.timestep = int(self.getBasicTimeStep())
 
-        hz = 50
-        period = int(1000 / hz)
+        period = int(1000 / 15)
         self.left_wheel = self.getDevice("left wheel")
         self.left_wheel.setPosition(float('inf'))
         self.left_wheel.setVelocity(0)
@@ -33,12 +32,14 @@ class MyController(Robot):
         self.right_wheel_sensor = self.getDevice("right wheel sensor")
         self.right_wheel_sensor.enable(period)
 
+        period = int(1000 / 20)
         self.kinect_color = self.getDevice("kinect color")
-        self.kinect_color.enable(self.timestep)
+        self.kinect_color.enable(period)
         self.kinect_range = self.getDevice("kinect range")
-        self.kinect_range.enable(self.timestep)
-        self.lrf = self.getDevice("Hokuyo UTM-30LX")
-        self.lrf.enable(self.timestep)
+        self.kinect_range.enable(period)
+        self.lidar = self.getDevice("Hokuyo UTM-30LX")
+        self.lidar.enable(period)
+        self.lidar_ros = LidarRos(self.lidar)
 
         self.ros_client = None
         self.connect_ros()
@@ -51,6 +52,9 @@ class MyController(Robot):
         self.sub_wheel_vels.subscribe(self.wheel_vels_callback)
         self.wheel_vels = None
         self.wheel_vels_lock = Lock()
+        self.pub_scan = Topic(
+            self.ros_client, '/base_scan', 'sensor_msgs/LaserScan')
+        self.pub_scan_timer = SimpleTimer(self.getTime(), 20.0)
 
     def close_ros(self):
         try:
@@ -83,8 +87,14 @@ class MyController(Robot):
     def publish_wheel_positions(self, tm):
         if self.pub_wheel_pos_timer.check_elapsed(tm):
             pos = [self.left_wheel_sensor.getValue(),
-                self.right_wheel_sensor.getValue()]
+                   self.right_wheel_sensor.getValue()]
             self.pub_wheel_pos.publish(Message(build_ros_array_msg(pos)))
+
+    def publish_scan(self, tm):
+        # https://github.com/cyberbotics/webots/blob/114ef740e47613c8235022716d7cf0782e383f3a/projects/default/controllers/ros/RosLidar.cpp#L102
+        if self.pub_scan_timer.check_elapsed(tm):
+            scan = self.lidar_ros.get_ros_msg()
+            self.pub_scan.publish(Message(scan))
 
     def enum_devices(self):
         device_num = self.getNumberOfDevices()
@@ -100,6 +110,7 @@ class MyController(Robot):
             if self.ros_client is not None and self.ros_client.is_connected:
                 self.set_wheel_vels_from_rosmsg()
                 self.publish_wheel_positions(tm)
+                self.publish_scan(tm)
             else:
                 self.connect_ros()
 
