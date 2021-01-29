@@ -5,7 +5,8 @@ import math
 from controller import Robot
 from threading import Lock
 from roslibpy import Message, Ros, Topic
-from utils import build_ros_array_msg, SimpleTimer, LidarRos
+from utils import build_ros_array_msg, SimpleTimer
+from lidar_ros import LidarRos
 
 """
 Download Twisted‑20.3.0‑cp39‑cp39‑win_amd64.whl from https://www.lfd.uci.edu/~gohlke/pythonlibs/#twisted
