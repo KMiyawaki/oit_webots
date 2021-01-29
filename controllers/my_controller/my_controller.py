@@ -21,7 +21,7 @@ class MyController(Robot):
         super(MyController, self).__init__()
         self.timestep = int(self.getBasicTimeStep())
 
-        wheel_hz = 40.0
+        wheel_hz = 10.0
         period = int(1000 / wheel_hz)
         self.left_wheel = self.getDevice("left wheel")
         self.left_wheel.setPosition(float('inf'))
