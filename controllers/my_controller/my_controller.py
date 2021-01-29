@@ -21,7 +21,8 @@ class MyController(Robot):
         super(MyController, self).__init__()
         self.timestep = int(self.getBasicTimeStep())
 
-        period = int(1000 / 15)
+        wheel_hz = 40.0
+        period = int(1000 / wheel_hz)
         self.left_wheel = self.getDevice("left wheel")
         self.left_wheel.setPosition(float('inf'))
         self.left_wheel.setVelocity(0)
@@ -33,7 +34,8 @@ class MyController(Robot):
         self.right_wheel_sensor = self.getDevice("right wheel sensor")
         self.right_wheel_sensor.enable(period)
 
-        period = int(1000 / 20)
+        sensor_hz = 15.0
+        period = int(1000 / sensor_hz)
         self.kinect_color = self.getDevice("kinect color")
         self.kinect_color.enable(period)
         self.kinect_range = self.getDevice("kinect range")
@@ -41,14 +43,13 @@ class MyController(Robot):
         self.lidar = self.getDevice("Hokuyo UTM-30LX")
         self.lidar.enable(period)
         self.lidar_ros = LidarRos(self.lidar)
-        print(str(self.lidar_ros))
 
         self.ros_client = None
         self.connect_ros()
         self.pub_wheel_pos = Topic(
             self.ros_client, '/webots/wheel_pos', 'std_msgs/Float32MultiArray')
         self.pub_wheel_pos.advertise()
-        self.pub_wheel_pos_timer = SimpleTimer(self.getTime(), 10.0)
+        self.pub_wheel_pos_timer = SimpleTimer(self.getTime(), wheel_hz)
         self.sub_wheel_vels = Topic(
             self.ros_client, '/webots/wheel_vels', 'std_msgs/Float32MultiArray')
         self.sub_wheel_vels.subscribe(self.wheel_vels_callback)
@@ -56,7 +57,7 @@ class MyController(Robot):
         self.wheel_vels_lock = Lock()
         self.pub_scan = Topic(
             self.ros_client, '/base_scan', 'sensor_msgs/LaserScan')
-        self.pub_scan_timer = SimpleTimer(self.getTime(), 20.0)
+        self.pub_scan_timer = SimpleTimer(self.getTime(), sensor_hz)
 
     def close_ros(self):
         try:
