@@ -4,7 +4,7 @@ import time
 class LidarRos(object):
     def __init__(self, lidar, frame_id="base_laser_link"):
         self.lidar = lidar
-        self.angle_min = self.lidar.getFov() / 2.0
+        self.angle_min = -self.lidar.getFov() / 2.0
         self.angle_max = self.lidar.getFov() / 2.0
         self.angle_increment = self.lidar.getFov() / self.lidar.getHorizontalResolution()
         self.scan_time = self.lidar.getSamplingPeriod() / 1000.0
@@ -20,6 +20,7 @@ class LidarRos(object):
 
     def get_ros_msg(self):
         unix_time = time.time() # for ROS
+        scan =  list(reversed(self.lidar.getRangeImage()))
         msg = {
             'header': build_ros_header(unix_time, self.frame_id, self.seq),
             'angle_min': self.angle_min,        # start angle of the scan [rad]
@@ -36,7 +37,7 @@ class LidarRos(object):
             'range_max': self.range_max,        # maximum range value [m]
 
             # range data [m] (Note: values < range_min or > range_max should be discarded)
-            'ranges': self.lidar.getRangeImage(),
+            'ranges': scan,
             'intensities': [],    # intensity data [device-specific units
         }
         self.seq = self.seq + 1

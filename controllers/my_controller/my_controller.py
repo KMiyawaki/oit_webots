@@ -40,6 +40,7 @@ class MyController(Robot):
         self.lidar = self.getDevice("Hokuyo UTM-30LX")
         self.lidar.enable(period)
         self.lidar_ros = LidarRos(self.lidar)
+        print(str(self.lidar_ros))
 
         self.ros_client = None
         self.connect_ros()
