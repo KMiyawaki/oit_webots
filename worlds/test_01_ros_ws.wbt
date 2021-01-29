@@ -5,7 +5,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.1379551055622273 0.9854239417306007 0.09953915768902352 1.3904752993701748
-  position 4.222092407227264 1.370389495691127 1.3271499576595431
+  position 2.026603464727151 0.6709071967439777 0.21473224348559528
   follow "Pioneer 3-DX"
 }
 TexturedBackground {
@@ -28,13 +28,13 @@ Pedestrian {
   rotation 0 1 0 -2.3561953071795863
 }
 Pioneer3dx {
-  controller "my_controller"
+  controller "ros_connection_ws"
   extensionSlot [
+    HokuyoUrg04lx {
+      translation 0 0.04 -0.2
+    }
     Kinect {
       translation 0 0.14 -0.14
-    }
-    HokuyoUtm30lx {
-      translation 0 0.03 -0.17
     }
   ]
 }

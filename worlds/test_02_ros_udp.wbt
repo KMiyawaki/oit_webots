@@ -1,0 +1,40 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  title "test_01_ros"
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation -0.2106390129595309 0.9641656085337542 0.16129440641314866 1.422943818040353
+  position 2.346375752066351 0.7275114712872652 0.15484670335941195
+  follow "Pioneer 3-DX"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 5 5
+  floorTileSize 2 2
+  wallHeight 0.5
+}
+Armchair {
+  translation -1.9 0 -1.08
+}
+OilBarrel {
+  translation 0.57 0.44 -0.85
+}
+Pedestrian {
+  translation 1.79 1.27 1.76
+  rotation 0 1 0 -2.3561953071795863
+}
+Pioneer3dx {
+  controller "ros_connection_udp"
+  extensionSlot [
+    HokuyoUrg04lx {
+      translation 0 0.01 -0.17
+    }
+    Kinect {
+      translation 0 0.14 -0.14
+    }
+  ]
+}
