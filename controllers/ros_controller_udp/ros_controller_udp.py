@@ -25,7 +25,7 @@ class MyController(Robot):
         self.right_wheel_sensor = self.getDevice("right wheel sensor")
         self.right_wheel_sensor.enable(period)
 
-        sensor_hz = 15.0
+        sensor_hz = 30.0
         period = int(1000 / sensor_hz)
         self.kinect_color = self.getDevice("kinect color")
         self.kinect_color.enable(period)

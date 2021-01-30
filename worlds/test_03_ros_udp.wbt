@@ -28,7 +28,7 @@ Pedestrian {
   rotation 0 1 0 -2.3561953071795863
 }
 Pioneer3dx {
-  controller "ros_connection_udp"
+  controller "ros_controller_udp"
   extensionSlot [
     HokuyoUrg04lx {
       translation 0 0.01 -0.17
