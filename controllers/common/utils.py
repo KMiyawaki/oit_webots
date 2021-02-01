@@ -1,27 +1,8 @@
 # -*- coding: utf_8 -*-
 
+import bson
 import math
 import time
-
-
-class SimpleTimer(object):
-    def __init__(self, sec=0, hz=1):
-        self.set_time(sec)
-        self.period = 1.0 / hz
-
-    def set_time(self, sec):
-        self.tm = sec
-
-    def elapsed(self, sec):
-        return sec - self.tm
-
-    def check_elapsed(self, sec, set_if_elapsed=True):
-        elapsed = self.elapsed(sec)
-        if elapsed > self.period:
-            if set_if_elapsed:
-                self.set_time(sec)
-            return True
-        return False
 
 
 def build_ros_header(time, frame_id, seq):
@@ -31,6 +12,21 @@ def build_ros_header(time, frame_id, seq):
         'frame_id': frame_id,
         'seq': seq
     }
+
+
+def build_sigverse_message(topic_name, topic_type, sensor_message, op='publish'):
+    if topic_name[0] != '/':
+        topic_name = "/" + topic_name
+    return {
+        'op': op,
+        'topic': topic_name,
+        'type': topic_type,
+        'msg': sensor_message
+    }
+
+
+def bson_serialize(message):
+    return bson.BSON.encode(message)
 
 
 def build_ros_array_msg(data):
